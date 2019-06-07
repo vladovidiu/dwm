@@ -60,12 +60,14 @@ static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() 
 static const char *dmenucmd[]    = { "dmenu_run", NULL };
 static const char *termcmd[]     = { "alacritty", NULL };
 static const char *clipmenucmd[] = { "clipmenu", NULL };
+static const char *pri2clip[]  = { "sh", "-c", "xclip -o -selection primary | xclip -selection clipboard", NULL };
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
 	{ MODKEY,                       XK_v,      spawn,          {.v = clipmenucmd } },
+	{ MODKEY,                       XK_c,      spawn,          {.v = pri2clip } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
