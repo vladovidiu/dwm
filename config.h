@@ -1,5 +1,7 @@
 /* See LICENSE file for copyright and license details. */
 
+#include "fibonacci.c"
+
 /* appearance */
 static const unsigned int borderpx  = 1;        /* border pixel of windows */
 static const unsigned int snap      = 32;       /* snap pixel */
@@ -8,26 +10,22 @@ static const int topbar             = 1;        /* 0 means bottom bar */
 static const char *fonts[]          = { "UbuntuMono Nerd Font:size=11" };
 static const char dmenufont[]       = "UbuntuMono Nerd Font:size=10";
 /* static const char dmenufont[]       = "Fira Code:size=10"; */
-static const char col_gray1[]       = "#222222";
-static const char col_gray2[]       = "#444444";
-static const char col_gray3[]       = "#bbbbbb";
-static const char col_gray4[]       = "#eeeeee";
-static const char col_cyan[]        = "#005577";
-/* static const char col_gray1[]       = "#1d2330"; */
-/* static const char col_gray2[]       = "#4b5665"; /1* border color unfocused windows *1/ */
-/* static const char col_gray3[]       = "#ad69af"; */
-/* static const char col_gray4[]       = "#d1d7e1"; */
-/* static const char col_cyan[]        = "#84598d"; /1* border color focused windows and tags *1/ */
+static const char col_vdark[]       = "#000000";
+static const char col_dark[]        = "#0f011c";
+static const char col_mid[]         = "#ff00ff";
+static const char col_norm[]        = "#ff00ff";
+static const char col_full[]        = "#c67998";
+static const char col_sel[]         = "#971237";
 
 static const char *colors[][3]      = {
 	/*               fg         bg         border   */
-	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
-	[SchemeSel]  = { col_gray4, col_cyan,  col_cyan  },
+	[SchemeNorm] = { col_sel,  col_vdark, col_dark  },
+	[SchemeSel]  = { col_full, col_vdark, col_sel   },
 };
 
 /* tagging */
-static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
-/* static const char *tags[] = { "", "", "", "", "", "", "", "", "" }; */
+static const char *tags[]    = { "01", "02", "03", "04", "05", "06", "07", "08", "09" };
+static const char *alttags[] = { "<01>", "<02>", "<03>", "<04>", "<05>", "<06>", "<07>", "<08>", "<09>" };
 
 static const Rule rules[] = {
 	/* xprop(1):
@@ -50,6 +48,10 @@ static const Layout layouts[] = {
 	{ "[]=",      tile },    /* first entry is default */
 	{ "><>",      NULL },    /* no layout function means floating behavior */
 	{ "[M]",      monocle },
+	{ "[@]",      spiral },
+	{ "[\\]",     dwindle },
+	{ "|M|",      centeredmaster },
+	{ ">M>",      centeredfloatingmaster },
 };
 
 /* key definitions */
@@ -90,6 +92,10 @@ static Key keys[] = {
 	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
 	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
 	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
+	{ MODKEY,                       XK_s,      setlayout,      {.v = &layouts[3]} },
+	{ MODKEY,                       XK_d,      setlayout,      {.v = &layouts[4]} },
+	{ MODKEY,                       XK_u,      setlayout,      {.v = &layouts[5]} },
+	{ MODKEY,                       XK_o,      setlayout,      {.v = &layouts[6]} },
 	{ MODKEY,                       XK_space,  setlayout,      {0} },
 	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
 	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
