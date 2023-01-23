@@ -12,21 +12,53 @@ static const unsigned int systrayonleft = 0;   	/* 0: systray in the right corne
 static const unsigned int systrayspacing = 2;   /* systray spacing */
 static const int systraypinningfailfirst = 1;   /* 1: if pinning fails, display systray on the first monitor, False: display systray on the last monitor*/
 static const int showsystray        = 1;     /* 0 means no systray */
-static const char *fonts[]          = { "monospace:size=10" };
+static const char *fonts[]          = {
+  "Iosevka Nerd Font Mono:size=12:antialias=true:autohint=true",
+  "Symbola:size=10:antialias=true:autohint=true"
+};
 static const char dmenufont[]       = "monospace:size=10";
-static const char col_gray1[]       = "#222222";
-static const char col_gray2[]       = "#444444";
-static const char col_gray3[]       = "#bbbbbb";
-static const char col_gray4[]       = "#eeeeee";
-static const char col_cyan[]        = "#005577";
+static const char col_gray1[]       = "#1f1d29";
+static const char col_gray2[]       = "#403c58";
+static const char col_gray3[]       = "#ebbcba";
+static const char col_gray4[]       = "#f6c177";
+static const char col_cyan[]        = "#c4a7e7";
+
+static char bgd[]               = "#1f1d29";  /* Background  */
+static char fgd[]               = "#9bced7";  /* Foreground */
+static char col0[]              = "#403c58";  /* Black */ 
+static char col1[]              = "#ea6f91";  /* Red */ 
+static char col2[]              = "#9bced7";  /* Green */ 
+static char col3[]              = "#f1ca93";  /* Yellow */ 
+static char col4[]              = "#34738e";  /* Blue */ 
+static char col5[]              = "#c3a5e6";  /* Magenta */ 
+static char col6[]              = "#eabbb9";  /* Cyan */ 
+static char col7[]              = "#faebd7";  /* White */ 
+static char col8[]              = "#6f6e85";  /* Bright Black */ 
+static char col9[]              = "#ea6f91";  /* Bright Red */ 
+static char col10[]             = "#9bced7";  /* Bright Green */ 
+static char col11[]             = "#f1ca93";  /* Bright Yellow */ 
+static char col12[]             = "#34738e";  /* Bright Blue */ 
+static char col13[]             = "#c3a5e6";  /* Bright Magenta */ 
+static char col14[]             = "#eabbb9";  /* Bright Cyan */ 
+static char col15[]             = "#ffffff";  /* Bright White */ 
 static const char *colors[][3]      = {
 	/*               fg         bg         border   */
 	[SchemeNorm] = { col_gray3, col_gray1, col_gray2 },
-	[SchemeSel]  = { col_gray4, col_cyan,  col_cyan  },
+	[SchemeSel]  = { col_gray4, col_gray2,  col_gray1  },
+	[SchemeTag]        = { col8,     bgd,     bgd  },
+	[SchemeTag1]       = { col9,     bgd,     bgd  },
+	[SchemeTag2]       = { col10,    bgd,     bgd  },
+	[SchemeTag3]       = { col11,    bgd,     bgd  },
+	[SchemeTag4]       = { col12,    bgd,     bgd  },
+	[SchemeTag5]       = { col13,    bgd,     bgd  },
 };
 
 /* tagging */
-static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" };
+/* static const char *tags[] = { "1", "2", "3", "4", "5", "6", "7", "8", "9" }; */
+static const char *tags[] = { "", "爵", "", "", "", "6", "7", "8", "9" };
+
+static const int tagschemes[] = {
+    SchemeTag1, SchemeTag2, SchemeTag3, SchemeTag4, SchemeTag5 };
 
 static const Rule rules[] = {
 	/* xprop(1):
@@ -34,13 +66,14 @@ static const Rule rules[] = {
 	 *	WM_NAME(STRING) = title
 	 */
 	/* class      instance    title       tags mask     isfloating    issticky   isterminal   noswallow   monitor */
-	{ "Gimp",     NULL,       NULL,       0,            1,            0,         0,           0,          -1 },
-	{ "Firefox",  NULL,       NULL,       1 << 8,       0,            0,         0,           0,          -1 },
+	{ "Firefox",  NULL,       NULL,       1 << 1,       0,            0,         0,           0,          -1 },
+	{ "discord",  NULL,       NULL,       1 << 3,       0,            0,         0,           0,          -1 },
 	{ "St",       NULL,       NULL,       0,            0,            0,         1,           0,          -1 },
+	{ "mpv",      NULL,       NULL,       0,            0,            0,         0,           0,          -1 },
 };
 
 /* layout(s) */
-static const float mfact     = 0.55; /* factor of master area size [0.05..0.95] */
+static const float mfact     = 0.61; /* factor of master area size [0.05..0.95] */
 static const int nmaster     = 1;    /* number of clients in master area */
 static const int resizehints = 1;    /* 1 means respect size hints in tiled resizals */
 static const int lockfullscreen = 0; /* 1 will force focus on the fullscreen window */
@@ -53,7 +86,7 @@ static const Layout layouts[] = {
 };
 
 /* key definitions */
-#define MODKEY Mod1Mask
+#define MODKEY Mod4Mask
 #define TAGKEYS(KEY,TAG) \
 	{ MODKEY,                       KEY,      view,           {.ui = 1 << TAG} }, \
 	{ MODKEY|ControlMask,           KEY,      toggleview,     {.ui = 1 << TAG} }, \
@@ -65,16 +98,18 @@ static const Layout layouts[] = {
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
+static const char *dmenucmd[] = { "dmenu_run", NULL };
 static const char *termcmd[]  = { "st", NULL };
 static const char scratchpadname[] = "scratchpad";
 static const char *scratchpadcmd[] = { "st", "-t", scratchpadname, "-g", "120x34", NULL };
+static const char *background_changer[] = { "/home/vladovidiu/.config/feh.sh", NULL };
 
 #include "movestack.c"
 static const Key keys[] = {
 	/* modifier                     key        function        argument */
 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
-	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
+	{ MODKEY,                       XK_Return, spawn,          {.v = termcmd } },
+	{ MODKEY,                       XK_grave,  togglescratch,  {.v = scratchpadcmd } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
@@ -84,8 +119,7 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_l,      setmfact,       {.f = +0.05} },
 	{ MODKEY|ShiftMask,             XK_j,      movestack,      {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_k,      movestack,      {.i = -1 } },
-	{ MODKEY,                       XK_Return, zoom,           {0} },
-	{ MODKEY,                       XK_grave,  togglescratch,  {.v = scratchpadcmd } },
+	{ MODKEY|ShiftMask,             XK_Return, zoom,           {0} },
 	{ MODKEY,                       XK_Tab,    view,           {0} },
 	{ MODKEY|ShiftMask,             XK_j,      aspectresize,   {.i = +24} },
 	{ MODKEY|ShiftMask,             XK_k,      aspectresize,   {.i = -24} },
@@ -100,7 +134,11 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_comma,  focusmon,       {.i = -1 } },
 	{ MODKEY,                       XK_period, focusmon,       {.i = +1 } },
 	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
+	{ MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
 	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
+	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
+	{ MODKEY,                       XK_e,      spawn,          SHCMD("emacsclient -cna 'emacs'") },
+	{ MODKEY|ControlMask,           XK_y,      spawn,          SHCMD("ytfzf -D") },
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
 	TAGKEYS(                        XK_3,                      2)
