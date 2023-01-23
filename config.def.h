@@ -66,7 +66,7 @@ static const Rule rules[] = {
 	 *	WM_NAME(STRING) = title
 	 */
 	/* class      instance    title       tags mask     isfloating    issticky   isterminal   noswallow   monitor */
-	{ "Firefox",  NULL,       NULL,       1 << 1,       0,            0,         0,           0,          -1 },
+	{ "firefox",  NULL,       NULL,       1 << 1,       0,            0,         0,           0,          -1 },
 	{ "discord",  NULL,       NULL,       1 << 3,       0,            0,         0,           0,          -1 },
 	{ "St",       NULL,       NULL,       0,            0,            0,         1,           0,          -1 },
 	{ "mpv",      NULL,       NULL,       0,            0,            0,         0,           0,          -1 },
@@ -102,7 +102,7 @@ static const char *dmenucmd[] = { "dmenu_run", NULL };
 static const char *termcmd[]  = { "st", NULL };
 static const char scratchpadname[] = "scratchpad";
 static const char *scratchpadcmd[] = { "st", "-t", scratchpadname, "-g", "120x34", NULL };
-static const char *background_changer[] = { "/home/vladovidiu/.config/feh.sh", NULL };
+static const char *background_changer[] = { "/home/vt/.local/bin/feh.sh", NULL };
 
 #include "movestack.c"
 static const Key keys[] = {
@@ -129,6 +129,7 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
 	{ MODKEY,                       XK_space,  setlayout,      {0} },
 	{ MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
+	{ MODKEY,                       XK_s,      togglesticky,   {0} },
 	{ MODKEY,                       XK_0,      view,           {.ui = ~0 } },
 	{ MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
 	{ MODKEY,                       XK_comma,  focusmon,       {.i = -1 } },
@@ -139,6 +140,7 @@ static const Key keys[] = {
 	{ MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
 	{ MODKEY,                       XK_e,      spawn,          SHCMD("emacsclient -cna 'emacs'") },
 	{ MODKEY|ControlMask,           XK_y,      spawn,          SHCMD("ytfzf -D") },
+	{ MODKEY|ControlMask,           XK_b,      spawn,          {.v = background_changer } },
 	TAGKEYS(                        XK_1,                      0)
 	TAGKEYS(                        XK_2,                      1)
 	TAGKEYS(                        XK_3,                      2)
