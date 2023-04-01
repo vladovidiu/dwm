@@ -13,8 +13,8 @@ static const unsigned int systrayspacing = 2;   /* systray spacing */
 static const int systraypinningfailfirst = 1;   /* 1: if pinning fails, display systray on the first monitor, False: display systray on the last monitor*/
 static const int showsystray        = 1;     /* 0 means no systray */
 static const char *fonts[]          = {
-  "Iosevka Nerd Font Mono:size=12:antialias=true:autohint=true",
-  "Symbola:size=10:antialias=true:autohint=true"
+  "PragmataPro Mono Liga:pixelsize=20:antialias=true:autohint=true",
+  "Symbols Mono Nerd Font:pixelsize=20:antialias=true:autohint=true"
 };
 static const char dmenufont[]       = "monospace:size=10";
 static const char col_gray1[]       = "#1f1d29";
@@ -69,7 +69,7 @@ static const Rule rules[] = {
 	{ "firefox",  NULL,       NULL,       1 << 1,       0,            0,         0,           0,          -1 },
 	{ "discord",  NULL,       NULL,       1 << 3,       0,            0,         0,           0,          -1 },
 	{ "St",       NULL,       NULL,       0,            0,            0,         1,           0,          -1 },
-	{ "mpv",      NULL,       NULL,       0,            0,            0,         0,           0,          -1 },
+	{ "mpv",      NULL,       NULL,       0,            1,            0,         0,           0,          -1 },
 };
 
 /* layout(s) */
@@ -99,7 +99,7 @@ static const Layout layouts[] = {
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
 static const char *dmenucmd[] = { "dmenu_run", NULL };
-static const char *termcmd[]  = { "st", NULL };
+static const char *termcmd[]  = { "wezterm", NULL };
 static const char scratchpadname[] = "scratchpad";
 static const char *scratchpadcmd[] = { "st", "-t", scratchpadname, "-g", "120x34", NULL };
 static const char *background_changer[] = { "/home/vt/.local/bin/feh.sh", NULL };
